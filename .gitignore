@@ -1,0 +1,16 @@
+# Ignore ZIP files
+*.zip
+
+# Ignore RPM
+*.rpm
+
+# Ignore configuration files
+tnsnames.ora
+listener.ora
+gsm.ora
+
+# Ignore directories
+/*_old
+/oelvi
+/tfa
+/upgrade
