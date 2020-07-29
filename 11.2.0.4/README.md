@@ -54,6 +54,22 @@ If the group membership for the oracle user is not set properly, database softwa
    CAUSE: User performing installation is not a member of the operating system group specified for central inventory(oraInventory) ownership.
    ACTION: Specify an operating system group that the installing user is a member of. All the members of this operating system group will have write permission to the central inventory directory (oraInventory).
 ```
-This is due to the oracle user not being a primary member of the oinstall group. The 11g preinstallation binary does not set group memberships properly. 
-One option is to set dba as the group owning the Inventory (set this in db_inst.rsp).
-I chose to use the 19c pre-installation binary, which sets the group correctly. There are additional packages needed for 11g that the 11g preinstallation binary handles. For the 19c RPM to set groups correctly it must be run before the 11g RPM.
+This is due to the oracle user not being a primary member of the oinstall group. The 11g preinstallation binary does not set group memberships properly. Preinstall RPM for 12cR2 and later include the correct group memberships to avoid the error. This is visible in `/etc/group` where `oracle` is included on the `oinstall` line:
+#### Correct (12cR2 and later preinstall RPM):
+```
+oinstall:x:54321:oracle
+dba:x:54322:oracle
+```
+### Incorrect (11g, 12cR1 preinstall RPM):
+```
+oinstall:x:54321:
+dba:x:54322:oracle
+```
+This image uses the 19c RPM.
+
+There are additional packages needed that the 11g preinstallation binary handles. For the 19c RPM to set groups correctly, run it before the 11g RPM in the Dockerfile or Linux OS configuration.
+
+An alternative is to use dba group, changing the value for `UNIX_GROUP_NAME` in db_inst.rsp from `oinstall` to `dba`:
+```
+UNIX_GROUP_NAME=dba
+```
