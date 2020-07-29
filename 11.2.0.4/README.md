@@ -60,7 +60,7 @@ This is due to the oracle user not being a primary member of the oinstall group.
 oinstall:x:54321:oracle
 dba:x:54322:oracle
 ```
-### Incorrect (11g, 12cR1 preinstall RPM):
+#### Incorrect (11g, 12cR1 preinstall RPM):
 ```
 oinstall:x:54321:
 dba:x:54322:oracle
