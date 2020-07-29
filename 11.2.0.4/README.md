@@ -28,3 +28,32 @@ Pass environment values during `docker run` with the `-e` flag. Options include:
 * ORACLE_CHARACTERSET - Database character set (default: AL32UTF8)
 * NLS_CHARACTERSET - NLS character set (default: AL16UTF16)
 
+## Errata
+### Warnings for `nmosudo`
+The 11.2.0.4.181016 Security Update application will complete with a warning:
+```
+ins_emagent.mk:113: warning: overriding recipe for target `nmosudo'
+ins_emagent.mk:52: warning: ignoring old recipe for target `nmosudo'
+```
+These may be ignored. See Doc ID 1562458.1 for details.
+
+### DBCA reports "Aurora assertion failure"
+If `JAVA_JIT_ENABLED` is set to TRUE, DBCA will fail/hang at 74% with:
+```
+ORA-29516: Aurora assertion failure: Assertion failure at joez.c:3422
+```
+Pass `JAVA_JIT_ENABLED=false` to DBCA. In this build the parameter is passed in dbca.rsp:
+```
+INITPARAMS="JAVA_JIT_ENABLED=false"
+```
+
+### Use of 19c and 11g Preinstall RPM
+If the group membership for the oracle user is not set properly, database software installation will fail with:
+```
+[FATAL] [INS-32038] The operating system group specified for central inventory (oraInventory) ownership is invalid.
+   CAUSE: User performing installation is not a member of the operating system group specified for central inventory(oraInventory) ownership.
+   ACTION: Specify an operating system group that the installing user is a member of. All the members of this operating system group will have write permission to the central inventory directory (oraInventory).
+```
+This is due to the oracle user not being a primary member of the oinstall group. The 11g preinstallation binary does not set group memberships properly. 
+One option is to set dba as the group owning the Inventory (set this in db_inst.rsp).
+I chose to use the 19c pre-installation binary, which sets the group correctly. There are additional packages needed for 11g that the 11g preinstallation binary handles. For the 19c RPM to set groups correctly it must be run before the 11g RPM.
