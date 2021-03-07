@@ -1,3 +1,5 @@
+# Archived
+This repository is archived: see [oraclesean/docker-oracle](https://github.com/oraclesean/docker-oracle) for my most current Oracle/Docker content.
 # oracle-docker
 This repository is a collected home for Oracle/Docker projects. It superscedes any older Docker project directories.
 # Contents
